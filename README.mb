@@ -1,1 +1,3 @@
 A short library for testing if a slice of strings are contained within another slice of stings. Three competing methods are provided.
+
+Also provides a method for reading and normilizing words from a bufio.scanner and returning []string (a slice of strings)
