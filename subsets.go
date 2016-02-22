@@ -7,9 +7,10 @@ import (
     "unicode"
     "strings"
     "bytes"
+    "github.com/JeremyOne/runeTree"
 )
 
-//check if every item in array 'B' is contained in array 'A'
+//check if every item in array 'B' is contained in array 'A' using a brute-force method
 func ArrayIsSubset_BruteForce(A []string, B []string, returnEarly bool) bool{
 
     foundAll := true
@@ -36,7 +37,7 @@ func ArrayIsSubset_BruteForce(A []string, B []string, returnEarly bool) bool{
     return foundAll
 }
 
-//check if every item in array 'B' is contained in array 'A'
+//check if every item in array 'B' is contained in array 'A' using a hash map
 func ArrayIsSubset_HashMap(A []string, B []string, returnEarly bool, reportSize bool) bool{
 
     mapA := make(map[string]bool)
@@ -67,6 +68,35 @@ func ArrayIsSubset_HashMap(A []string, B []string, returnEarly bool, reportSize 
     return foundAll;
 }
 
+//check if every item in array 'B' is contained in array 'A' using a RuneTree (search tree)
+func ArrayIsSubset_RuneTree(A []string, B []string, returnEarly bool) bool{
+
+    tree := &runeTree.RuneTree{'-', &[]runeTree.RuneTree{}}
+
+    foundAll := true
+
+    for _, itemA := range A {
+        //add all items to the search tree
+        runeTree.RuneTreeInsert(tree, itemA, false)
+    }
+
+    var foundItem bool
+    for _, itemB := range B {
+        foundItem = runeTree.RuneTreeInsert(tree, itemB, true)
+
+        if(foundItem == false && returnEarly){  
+            //if we did not find, and we want to return ASAP
+            return false
+        } else if foundItem == false {
+            //if we are going to return late
+            foundAll = false
+        }
+    }
+
+    return foundAll
+}
+
+//Reads from a scanner and returns a list of lower-case words with no punctuation
 func ReadScannerWords(scanner *bufio.Scanner) []string{
     output := []string{}
 
@@ -76,6 +106,7 @@ func ReadScannerWords(scanner *bufio.Scanner) []string{
     currentWordLength := 0;
 
     //scan line by line
+    //this implementation ignores punctuation, numbers and repeated whitespace
     for scanner.Scan() {
         
         currentLine := strings.ToLower(scanner.Text())
@@ -94,8 +125,6 @@ func ReadScannerWords(scanner *bufio.Scanner) []string{
                     currentWordBuffer.Reset()
                 }
             }
-
-            //note: we are ignoring all other charcters (anything that's not a letter or whitespace)
         }
 
         //write the last word
