@@ -1,1 +1,1 @@
-A short library for testing if a slice of strings are contained within another slice of stings. Two alternative methods are provided.
+A short library for testing if a slice of strings are contained within another slice of stings. Three competing methods are provided.
